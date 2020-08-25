@@ -1,0 +1,5 @@
+{
+    "port": 3000,
+    "jwtSecret": "mevn hi hello",
+    "mongoUri": "mongodb+srv://admin:123098@cluster0.hoylo.mongodb.net/app?retryWrites=true&w=majority"
+}
