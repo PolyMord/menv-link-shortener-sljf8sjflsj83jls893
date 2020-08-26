@@ -1,11 +1,24 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Auth</router-link>|
-      <router-link to="/create">Create</router-link>|
-      <router-link to="/links">Links</router-link>|
-      <router-link to="/links/:id">Detail</router-link>|
-    </div>
-    <router-view />
+    <component :is="layout">
+      <router-view />
+    </component>
   </div>
 </template>
+
+<script>
+import MainLayout from '@/layouts/MainLayout.vue'
+import EmptyLayout from '@/layouts/EmptyLayout.vue'
+
+export default {
+  computed: {
+    layout() {
+      return (this.$route.meta.layout || 'empty') + '-layout'
+    }
+  },
+
+  components: {
+    MainLayout, EmptyLayout
+  }
+}
+</script>
