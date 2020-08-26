@@ -32,16 +32,16 @@
               </div>
             </div>
             <div class="card-action">
-              <button class="sign_in btn yellow darken-4" :disabled="loading">
-                Sign In
-              </button>
+              <button
+                class="sign_in btn yellow darken-4"
+                :disabled="loading"
+                @click="loginHandler"
+              >Sign In</button>
               <button
                 class="btn grey lighten-1 black-text"
                 :disabled="loading"
                 @click="registerHandler"
-              >
-                Sign Up
-              </button>
+              >Sign Up</button>
             </div>
           </div>
         </div>
@@ -58,10 +58,14 @@ export default {
     form: {
       email: '',
       password: ''
-    },
-    loading: false,
-    error: null
+    }
   }),
+
+  computed: {
+    loading() {
+      return this.$store.state.loading
+    }
+  },
 
   methods: {
     changeHandler() {
@@ -73,41 +77,39 @@ export default {
 
     async registerHandler() {
       try {
-        const data = await this.request('/api/auth/register', 'POST', {
-          ...this.form
+        const data = await this.$store.dispatch('request', {
+          url: '/api/auth/register',
+          method: 'POST',
+          body: { ...this.form }
         })
-        console.log(data)
+
+        this.$message(data.message)
       } catch (e) {
-        console.log(e)
+        this.$message(e.message)
       }
     },
 
-    async request(url, method = 'GET', body = null, headers = {}) {
-      this.loading = true
+    async loginHandler() {
       try {
-        if (body) {
-          body = JSON.stringify(body)
-          headers['Content-Type'] = 'application/json'
-        }
+        const data = await this.$store.dispatch('request', {
+          url: '/api/auth/login',
+          method: 'POST',
+          body: { ...this.form }
+        })
 
-        const response = await fetch(url, { method, body, headers })
-        const data = await response.json()
+        this.$store.commit('login', data)
+        this.$router.push('/create')
 
-        if (!response.ok) {
-          throw new Error(data.message || 'Something went wrong')
-        }
-        this.loading = false
-
-        return data
+        this.$message(data.message)
       } catch (e) {
-        this.loading = false
-        this.error = e.message
-        throw e
+        this.$message(e.message)
       }
     }
   },
 
-  mounted() {}
+  mounted() {
+    window.M.updateTextFields()
+  }
 }
 </script>
 

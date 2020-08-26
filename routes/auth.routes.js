@@ -41,7 +41,7 @@ router.post(
       }
 
       // иначе хешируем пароль, создаем нового пользователя
-      const hashedPassword = bcrypt.hash(password, 12)
+      const hashedPassword = await bcrypt.hash(password, 12)
       const user = new User({ email, password: hashedPassword })
 
       // сохраняем в базу
@@ -89,7 +89,7 @@ router.post(
         expiresIn: '1h',
       })
 
-      res.json({ token, userId: user.id })
+      res.json({ message: 'hi', token, userId: user.id })
     } catch (e) {
       res.status(500).json({ message: 'Something went wrong' })
     }
